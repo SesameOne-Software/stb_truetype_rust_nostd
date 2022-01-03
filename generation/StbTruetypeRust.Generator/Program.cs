@@ -114,7 +114,7 @@ namespace StbSharp.StbTrueType.Generator
 
 				if (outputKey == null)
 				{
-					outputKey = "сommon";
+					outputKey = "common";
 				}
 
 				if (!output.ContainsKey(outputKey))
@@ -148,12 +148,11 @@ namespace StbSharp.StbTrueType.Generator
 				},
 				SkipFunctions = new string[]
 				{
-					"stbtt__find_table",
 				},
 			};
 
-			var dump = TextCodeConverter.Convert(parameters.InputPath, parameters.Defines);
-			File.WriteAllText(@"..\..\..\..\..\..\StbTrueType.txt", dump);
+//			var dump = TextCodeConverter.Convert(parameters.InputPath, parameters.Defines);
+//			File.WriteAllText(@"..\..\..\..\..\..\StbTrueType.txt", dump);
 
 			var result = RustCodeConverter.Convert(parameters);
 
