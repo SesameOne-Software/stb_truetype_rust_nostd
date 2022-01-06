@@ -1,6 +1,8 @@
 # Overview
 stb_truetype_rust is Rust port of stb_truetype.h, which is library to rasterize ttf fonts.
 
+The porting was done using [Hebron](https://github.com/HebronFramework/Hebron).
+
 # Crate
 https://crates.io/crates/stb_truetype_rust
 
