@@ -37,7 +37,7 @@ impl std::default::Default for stbtt__hheap_chunk {
 pub unsafe fn stbtt__hheap_alloc(
     mut hh: *mut stbtt__hheap,
     mut size: u64,
-    mut userdata: *mut u8,
+    mut userdata: *const u8,
 ) -> *mut u8 {
     if ((*hh).first_free) != std::ptr::null_mut() {
         let mut p: *mut u8 = (*hh).first_free;
@@ -71,7 +71,7 @@ pub unsafe fn stbtt__hheap_alloc(
     }
 }
 
-pub unsafe fn stbtt__hheap_cleanup(mut hh: *mut stbtt__hheap, mut userdata: *mut u8) {
+pub unsafe fn stbtt__hheap_cleanup(mut hh: *mut stbtt__hheap, mut userdata: *const u8) {
     let mut c: *mut stbtt__hheap_chunk = (*hh).head;
     while ((c) != std::ptr::null_mut()) {
         let mut n: *mut stbtt__hheap_chunk = (*c).next;
@@ -90,7 +90,7 @@ pub unsafe fn stbtt__new_active(
     mut e: *mut stbtt__edge,
     mut off_x: i32,
     mut start_point: f32,
-    mut userdata: *mut u8,
+    mut userdata: *const u8,
 ) -> *mut stbtt__active_edge {
     let mut z: *mut stbtt__active_edge = ((stbtt__hheap_alloc(
         hh,

@@ -6,7 +6,7 @@ use std;
 
 #[derive(Debug, Copy, Clone)]
 pub struct stbtt__buf {
-    pub data: *mut u8,
+    pub data: *const u8,
     pub cursor: i32,
     pub size: i32,
 }
@@ -168,7 +168,7 @@ pub unsafe fn stbtt__dict_get_ints(
     }
 }
 
-pub unsafe fn stbtt__new_buf(mut p: *mut u8, mut size: u64) -> stbtt__buf {
+pub unsafe fn stbtt__new_buf(mut p: *const u8, mut size: u64) -> stbtt__buf {
     let mut r: stbtt__buf = stbtt__buf::default();
 
     r.data = p;

@@ -311,7 +311,7 @@ pub unsafe fn stbtt__rasterize(
     mut off_x: i32,
     mut off_y: i32,
     mut invert: i32,
-    mut userdata: *mut u8,
+    mut userdata: *const u8,
 ) {
     let mut y_scale_inv: f32 = if (invert) != 0 { -scale_y } else { scale_y };
     let mut e: *mut stbtt__edge = std::ptr::null_mut();
@@ -344,6 +344,7 @@ pub unsafe fn stbtt__rasterize(
             let mut a: i32 = k;
             let mut b: i32 = j;
             if (*p.offset((j) as isize)).y == (*p.offset((k) as isize)).y {
+                j = ((c_runtime::postInc(&mut k)) as i32);
                 continue;
             }
             (*e.offset((n) as isize)).invert = ((0) as i32);
@@ -354,6 +355,7 @@ pub unsafe fn stbtt__rasterize(
                 a = ((j) as i32);
                 b = ((k) as i32);
             }
+
             (*e.offset((n) as isize)).x0 =
                 (((*p.offset((a) as isize)).x * scale_x + shift_x) as f32);
             (*e.offset((n) as isize)).y0 =
@@ -379,7 +381,7 @@ pub unsafe fn stbtt__rasterize_sorted_edges(
     mut vsubsample: i32,
     mut off_x: i32,
     mut off_y: i32,
-    mut userdata: *mut u8,
+    mut userdata: *const u8,
 ) {
     let mut hh: stbtt__hheap = Default::default();
     let mut active: *mut stbtt__active_edge = std::ptr::null_mut();
@@ -597,7 +599,7 @@ pub unsafe fn stbtt_Rasterize(
     mut x_off: i32,
     mut y_off: i32,
     mut invert: i32,
-    mut userdata: *mut u8,
+    mut userdata: *const u8,
 ) {
     let mut scale: f32 = if scale_x > scale_y { scale_y } else { scale_x };
     let mut winding_count: i32 = 0;

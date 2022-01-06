@@ -214,7 +214,7 @@ pub unsafe fn stbtt_PackEnd(mut spc: *mut stbtt_pack_context) {
 
 pub unsafe fn stbtt_PackFontRange(
     mut spc: *mut stbtt_pack_context,
-    mut fontdata: *mut u8,
+    mut fontdata: *const u8,
     mut font_index: i32,
     mut font_size: f32,
     mut first_unicode_codepoint_in_range: i32,
@@ -238,7 +238,7 @@ pub unsafe fn stbtt_PackFontRange(
 
 pub unsafe fn stbtt_PackFontRanges(
     mut spc: *mut stbtt_pack_context,
-    mut fontdata: *mut u8,
+    mut fontdata: *const u8,
     mut font_index: i32,
     mut ranges: *mut stbtt_pack_range,
     mut num_ranges: i32,

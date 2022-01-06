@@ -7,7 +7,7 @@ use std;
 #[derive(Debug, Copy, Clone)]
 pub struct stbtt_fontinfo {
     pub userdata: *mut u8,
-    pub data: *mut u8,
+    pub data: *const u8,
     pub fontstart: i32,
     pub numGlyphs: i32,
     pub loca: i32,
@@ -189,7 +189,7 @@ pub unsafe fn stbtt__get_svg(mut info: *mut stbtt_fontinfo) -> i32 {
     return (((*info).svg) as i32);
 }
 
-pub unsafe fn stbtt__GetCoverageIndex(mut coverageTable: *mut u8, mut glyph: i32) -> i32 {
+pub unsafe fn stbtt__GetCoverageIndex(mut coverageTable: *const u8, mut glyph: i32) -> i32 {
     let mut coverageFormat: u16 = ttUSHORT(coverageTable);
     if ((coverageFormat) as i32) == 1 {
         let mut glyphCount: u16 = ttUSHORT((coverageTable).offset((2) as isize));
@@ -199,7 +199,7 @@ pub unsafe fn stbtt__GetCoverageIndex(mut coverageTable: *mut u8, mut glyph: i32
         let mut straw: i32 = 0;
         let mut needle: i32 = glyph;
         while (l <= r) {
-            let mut glyphArray: *mut u8 = (coverageTable).offset((4) as isize);
+            let mut glyphArray: *const u8 = (coverageTable).offset((4) as isize);
             let mut glyphID: u16 = 0;
             m = (((l + r) >> 1) as i32);
             glyphID = ((ttUSHORT((glyphArray).offset((2 * m) as isize))) as u16);
@@ -216,7 +216,7 @@ pub unsafe fn stbtt__GetCoverageIndex(mut coverageTable: *mut u8, mut glyph: i32
         }
     } else if ((coverageFormat) as i32) == 2 {
         let mut rangeCount: u16 = ttUSHORT((coverageTable).offset((2) as isize));
-        let mut rangeArray: *mut u8 = (coverageTable).offset((4) as isize);
+        let mut rangeArray: *const u8 = (coverageTable).offset((4) as isize);
         let mut l: i32 = 0;
         let mut r: i32 = ((rangeCount) as i32) - 1;
         let mut m: i32 = 0;
@@ -224,7 +224,7 @@ pub unsafe fn stbtt__GetCoverageIndex(mut coverageTable: *mut u8, mut glyph: i32
         let mut strawEnd: i32 = 0;
         let mut needle: i32 = glyph;
         while (l <= r) {
-            let mut rangeRecord: *mut u8 = std::ptr::null_mut();
+            let mut rangeRecord: *const u8 = std::ptr::null_mut();
             m = (((l + r) >> 1) as i32);
             rangeRecord = (rangeArray).offset((6 * m) as isize);
             strawStart = ((ttUSHORT(rangeRecord)) as i32);
@@ -284,12 +284,12 @@ pub unsafe fn stbtt__GetGlyfOffset(mut info: *mut stbtt_fontinfo, mut glyph_inde
     return ((if g1 == g2 { -1 } else { g1 }) as i32);
 }
 
-pub unsafe fn stbtt__GetGlyphClass(mut classDefTable: *mut u8, mut glyph: i32) -> i32 {
+pub unsafe fn stbtt__GetGlyphClass(mut classDefTable: *const u8, mut glyph: i32) -> i32 {
     let mut classDefFormat: u16 = ttUSHORT(classDefTable);
     if ((classDefFormat) as i32) == 1 {
         let mut startGlyphID: u16 = ttUSHORT((classDefTable).offset((2) as isize));
         let mut glyphCount: u16 = ttUSHORT((classDefTable).offset((4) as isize));
-        let mut classDef1ValueArray: *mut u8 = (classDefTable).offset((6) as isize);
+        let mut classDef1ValueArray: *const u8 = (classDefTable).offset((6) as isize);
         if glyph >= ((startGlyphID) as i32)
             && glyph < ((startGlyphID) as i32) + ((glyphCount) as i32)
         {
@@ -299,7 +299,7 @@ pub unsafe fn stbtt__GetGlyphClass(mut classDefTable: *mut u8, mut glyph: i32) -
         }
     } else if ((classDefFormat) as i32) == 2 {
         let mut classRangeCount: u16 = ttUSHORT((classDefTable).offset((2) as isize));
-        let mut classRangeRecords: *mut u8 = (classDefTable).offset((4) as isize);
+        let mut classRangeRecords: *const u8 = (classDefTable).offset((4) as isize);
         let mut l: i32 = 0;
         let mut r: i32 = ((classRangeCount) as i32) - 1;
         let mut m: i32 = 0;
@@ -307,7 +307,7 @@ pub unsafe fn stbtt__GetGlyphClass(mut classDefTable: *mut u8, mut glyph: i32) -
         let mut strawEnd: i32 = 0;
         let mut needle: i32 = glyph;
         while (l <= r) {
-            let mut classRangeRecord: *mut u8 = std::ptr::null_mut();
+            let mut classRangeRecord: *const u8 = std::ptr::null_mut();
             m = (((l + r) >> 1) as i32);
             classRangeRecord = (classRangeRecords).offset((6 * m) as isize);
             strawStart = ((ttUSHORT(classRangeRecord)) as i32);
@@ -334,9 +334,9 @@ pub unsafe fn stbtt__GetGlyphGPOSInfoAdvance(
     mut glyph2: i32,
 ) -> i32 {
     let mut lookupListOffset: u16 = 0;
-    let mut lookupList: *mut u8 = std::ptr::null_mut();
+    let mut lookupList: *const u8 = std::ptr::null_mut();
     let mut lookupCount: u16 = 0;
-    let mut data: *mut u8 = std::ptr::null_mut();
+    let mut data: *const u8 = std::ptr::null_mut();
     let mut i: i32 = 0;
     let mut sti: i32 = 0;
     if (*info).gpos == 0 {
@@ -356,22 +356,24 @@ pub unsafe fn stbtt__GetGlyphGPOSInfoAdvance(
     while (i < ((lookupCount) as i32)) {
         let mut lookupOffset: u16 =
             ttUSHORT(((lookupList).offset((2) as isize)).offset((2 * i) as isize));
-        let mut lookupTable: *mut u8 = (lookupList).offset(((lookupOffset) as i32) as isize);
+        let mut lookupTable: *const u8 = (lookupList).offset(((lookupOffset) as i32) as isize);
         let mut lookupType: u16 = ttUSHORT(lookupTable);
         let mut subTableCount: u16 = ttUSHORT((lookupTable).offset((4) as isize));
-        let mut subTableOffsets: *mut u8 = (lookupTable).offset((6) as isize);
+        let mut subTableOffsets: *const u8 = (lookupTable).offset((6) as isize);
         if ((lookupType) as i32) != 2 {
+            c_runtime::preInc(&mut i);
             continue;
         }
         sti = ((0) as i32);
         while (sti < ((subTableCount) as i32)) {
             let mut subtableOffset: u16 = ttUSHORT((subTableOffsets).offset((2 * sti) as isize));
-            let mut table: *mut u8 = (lookupTable).offset(((subtableOffset) as i32) as isize);
+            let mut table: *const u8 = (lookupTable).offset(((subtableOffset) as i32) as isize);
             let mut posFormat: u16 = ttUSHORT(table);
             let mut coverageOffset: u16 = ttUSHORT((table).offset((2) as isize));
             let mut coverageIndex: i32 =
                 stbtt__GetCoverageIndex((table).offset(((coverageOffset) as i32) as isize), glyph1);
             if coverageIndex == -1 {
+                c_runtime::postInc(&mut sti);
                 continue;
             }
             if ((posFormat) as i32) == 1 {
@@ -388,10 +390,10 @@ pub unsafe fn stbtt__GetGlyphGPOSInfoAdvance(
                     let mut pairPosOffset: u16 = ttUSHORT(
                         ((table).offset((10) as isize)).offset((2 * coverageIndex) as isize),
                     );
-                    let mut pairValueTable: *mut u8 =
+                    let mut pairValueTable: *const u8 =
                         (table).offset(((pairPosOffset) as i32) as isize);
                     let mut pairValueCount: u16 = ttUSHORT(pairValueTable);
-                    let mut pairValueArray: *mut u8 = (pairValueTable).offset((2) as isize);
+                    let mut pairValueArray: *const u8 = (pairValueTable).offset((2) as isize);
                     if coverageIndex >= ((pairSetCount) as i32) {
                         return ((0) as i32);
                     }
@@ -400,7 +402,7 @@ pub unsafe fn stbtt__GetGlyphGPOSInfoAdvance(
                     l = ((0) as i32);
                     while (l <= r) {
                         let mut secondGlyph: u16 = 0;
-                        let mut pairValue: *mut u8 = std::ptr::null_mut();
+                        let mut pairValue: *const u8 = std::ptr::null_mut();
                         m = (((l + r) >> 1) as i32);
                         pairValue = (pairValueArray)
                             .offset(((2 + valueRecordPairSizeInBytes) * m) as isize);
@@ -436,8 +438,8 @@ pub unsafe fn stbtt__GetGlyphGPOSInfoAdvance(
                     );
                     let mut class1Count: u16 = ttUSHORT((table).offset((12) as isize));
                     let mut class2Count: u16 = ttUSHORT((table).offset((14) as isize));
-                    let mut class1Records: *mut u8 = std::ptr::null_mut();
-                    let mut class2Records: *mut u8 = std::ptr::null_mut();
+                    let mut class1Records: *const u8 = std::ptr::null_mut();
+                    let mut class2Records: *const u8 = std::ptr::null_mut();
                     let mut xAdvance: i16 = 0;
                     if glyph1class < 0 || glyph1class >= ((class1Count) as i32) {
                         return ((0) as i32);
@@ -495,7 +497,7 @@ pub unsafe fn stbtt__GetGlyphKernInfoAdvance(
     mut glyph1: i32,
     mut glyph2: i32,
 ) -> i32 {
-    let mut data: *mut u8 = ((*info).data).offset(((*info).kern) as isize);
+    let mut data: *const u8 = ((*info).data).offset(((*info).kern) as isize);
     let mut needle: u32 = 0;
     let mut straw: u32 = 0;
     let mut l: i32 = 0;
@@ -557,8 +559,8 @@ pub unsafe fn stbtt__GetGlyphShapeTT(
     mut pvertices: *mut *mut stbtt_vertex,
 ) -> i32 {
     let mut numberOfContours: i16 = 0;
-    let mut endPtsOfContours: *mut u8 = std::ptr::null_mut();
-    let mut data: *mut u8 = (*info).data;
+    let mut endPtsOfContours: *const u8 = std::ptr::null_mut();
+    let mut data: *const u8 = (*info).data;
     let mut vertices: *mut stbtt_vertex = std::ptr::null_mut();
     let mut num_vertices: i32 = 0;
     let mut g: i32 = stbtt__GetGlyfOffset(info, glyph_index);
@@ -587,7 +589,7 @@ pub unsafe fn stbtt__GetGlyphShapeTT(
         let mut sy: i32 = 0;
         let mut scx: i32 = 0;
         let mut scy: i32 = 0;
-        let mut points: *mut u8 = std::ptr::null_mut();
+        let mut points: *const u8 = std::ptr::null_mut();
         endPtsOfContours = (((data).offset((g) as isize)).offset((10) as isize));
         ins = ((ttUSHORT(
             (((data).offset((g) as isize)).offset((10) as isize))
@@ -614,9 +616,9 @@ pub unsafe fn stbtt__GetGlyphShapeTT(
         i = ((0) as i32);
         while (i < n) {
             if ((flagcount) as i32) == 0 {
-                flags = ((*c_runtime::postIncPtr(&mut points)) as u8);
+                flags = ((*c_runtime::postIncConstPtr(&mut points)) as u8);
                 if (((flags) as i32) & 8) != 0 {
-                    flagcount = ((*c_runtime::postIncPtr(&mut points)) as u8);
+                    flagcount = ((*c_runtime::postIncConstPtr(&mut points)) as u8);
                 }
             } else {
                 c_runtime::preDec(&mut flagcount);
@@ -629,7 +631,7 @@ pub unsafe fn stbtt__GetGlyphShapeTT(
         while (i < n) {
             flags = (((*vertices.offset((off + i) as isize))._type_) as u8);
             if (((flags) as i32) & 2) != 0 {
-                let mut dx: i16 = ((*c_runtime::postIncPtr(&mut points)) as i16);
+                let mut dx: i16 = ((*c_runtime::postIncConstPtr(&mut points)) as i16);
                 x += (if (((flags) as i32) & 16) != 0 {
                     ((dx) as i32)
                 } else {
@@ -652,7 +654,7 @@ pub unsafe fn stbtt__GetGlyphShapeTT(
         while (i < n) {
             flags = (((*vertices.offset((off + i) as isize))._type_) as u8);
             if (((flags) as i32) & 4) != 0 {
-                let mut dy: i16 = ((*c_runtime::postIncPtr(&mut points)) as i16);
+                let mut dy: i16 = ((*c_runtime::postIncConstPtr(&mut points)) as i16);
                 y += (if (((flags) as i32) & 32) != 0 {
                     ((dy) as i32)
                 } else {
@@ -698,7 +700,7 @@ pub unsafe fn stbtt__GetGlyphShapeTT(
                         cy,
                     )) as i32);
                 }
-                start_off = (!(((flags) as i32) & 1));
+                start_off = if (flags & 1) != 0 { 0 } else { 1 };
                 if (start_off) != 0 {
                     scx = ((x) as i32);
                     scy = ((y) as i32);
@@ -787,7 +789,7 @@ pub unsafe fn stbtt__GetGlyphShapeTT(
     } else {
         if ((numberOfContours) as i32) < 0 {
             let mut more: i32 = 1;
-            let mut comp: *mut u8 = ((data).offset((g) as isize)).offset((10) as isize);
+            let mut comp: *const u8 = ((data).offset((g) as isize)).offset((10) as isize);
             num_vertices = ((0) as i32);
             vertices = std::ptr::null_mut();
             while ((more) != 0) {
@@ -941,7 +943,7 @@ pub unsafe fn stbtt_FindGlyphIndex(
     mut info: *mut stbtt_fontinfo,
     mut unicode_codepoint: i32,
 ) -> i32 {
-    let mut data: *mut u8 = (*info).data;
+    let mut data: *const u8 = (*info).data;
     let mut index_map: u32 = (((*info).index_map) as u32);
     let mut format: u16 = ttUSHORT(((data).offset((index_map) as isize)).offset((0) as isize));
     if ((format) as i32) == 0 {
@@ -1109,16 +1111,16 @@ pub unsafe fn stbtt_FindGlyphIndex(
     return ((0) as i32);
 }
 
-pub unsafe fn stbtt_FindSVGDoc(mut info: *mut stbtt_fontinfo, mut gl: i32) -> *mut u8 {
+pub unsafe fn stbtt_FindSVGDoc(mut info: *mut stbtt_fontinfo, mut gl: i32) -> *const u8 {
     let mut i: i32 = 0;
-    let mut data: *mut u8 = (*info).data;
-    let mut svg_doc_list: *mut u8 =
+    let mut data: *const u8 = (*info).data;
+    let mut svg_doc_list: *const u8 =
         (data).offset((stbtt__get_svg(((info) as *mut stbtt_fontinfo))) as isize);
     let mut numEntries: i32 = ((ttUSHORT(svg_doc_list)) as i32);
-    let mut svg_docs: *mut u8 = (svg_doc_list).offset((2) as isize);
+    let mut svg_docs: *const u8 = (svg_doc_list).offset((2) as isize);
     i = ((0) as i32);
     while (i < numEntries) {
-        let mut svg_doc: *mut u8 = (svg_docs).offset((12 * i) as isize);
+        let mut svg_doc: *const u8 = (svg_docs).offset((12 * i) as isize);
         if (gl >= ((ttUSHORT(svg_doc)) as i32))
             && (gl <= ((ttUSHORT((svg_doc).offset((2) as isize))) as i32))
         {
@@ -1126,7 +1128,7 @@ pub unsafe fn stbtt_FindSVGDoc(mut info: *mut stbtt_fontinfo, mut gl: i32) -> *m
         }
         c_runtime::postInc(&mut i);
     }
-    return ((std::ptr::null_mut()) as *mut u8);
+    return ((std::ptr::null_mut()) as *const u8);
 }
 
 pub unsafe fn stbtt_FreeShape(mut info: *mut stbtt_fontinfo, mut v: *mut stbtt_vertex) {
@@ -1340,7 +1342,7 @@ pub unsafe fn stbtt_GetFontNameString(
     let mut i: i32 = 0;
     let mut count: i32 = 0;
     let mut stringOffset: i32 = 0;
-    let mut fc: *mut u8 = (*font).data;
+    let mut fc: *const u8 = (*font).data;
     let mut offset: u32 = (((*font).fontstart) as u32);
     let mut nm: u32 = stbtt__find_table(fc, offset, "name");
     if nm == 0 {
@@ -1993,8 +1995,8 @@ pub unsafe fn stbtt_GetGlyphSVG(
     mut gl: i32,
     mut svg: *mut *mut i8,
 ) -> i32 {
-    let mut data: *mut u8 = (*info).data;
-    let mut svg_doc: *mut u8 = std::ptr::null_mut();
+    let mut data: *const u8 = (*info).data;
+    let mut svg_doc: *const u8 = std::ptr::null_mut();
     if (*info).svg == 0 {
         return ((0) as i32);
     }
@@ -2013,7 +2015,7 @@ pub unsafe fn stbtt_GetKerningTable(
     mut table: *mut stbtt_kerningentry,
     mut table_length: i32,
 ) -> i32 {
-    let mut data: *mut u8 = ((*info).data).offset(((*info).kern) as isize);
+    let mut data: *const u8 = ((*info).data).offset(((*info).kern) as isize);
     let mut k: i32 = 0;
     let mut length: i32 = 0;
     if (*info).kern == 0 {
@@ -2043,7 +2045,7 @@ pub unsafe fn stbtt_GetKerningTable(
 }
 
 pub unsafe fn stbtt_GetKerningTableLength(mut info: *mut stbtt_fontinfo) -> i32 {
-    let mut data: *mut u8 = ((*info).data).offset(((*info).kern) as isize);
+    let mut data: *const u8 = ((*info).data).offset(((*info).kern) as isize);
     if (*info).kern == 0 {
         return ((0) as i32);
     }
@@ -2058,7 +2060,7 @@ pub unsafe fn stbtt_GetKerningTableLength(mut info: *mut stbtt_fontinfo) -> i32 
 
 pub unsafe fn stbtt_InitFont(
     mut info: *mut stbtt_fontinfo,
-    mut data: *mut u8,
+    mut data: *const u8,
     mut offset: i32,
 ) -> i32 {
     return ((stbtt_InitFont_internal(info, data, offset)) as i32);
@@ -2066,7 +2068,7 @@ pub unsafe fn stbtt_InitFont(
 
 pub unsafe fn stbtt_InitFont_internal(
     mut info: *mut stbtt_fontinfo,
-    mut data: *mut u8,
+    mut data: *const u8,
     mut fontstart: i32,
 ) -> i32 {
     let mut cmap: u32 = 0;

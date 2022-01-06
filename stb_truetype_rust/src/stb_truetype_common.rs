@@ -446,7 +446,7 @@ pub unsafe fn stbtt__cuberoot(mut x: f32) -> f32 {
     }
 }
 
-pub unsafe fn stbtt__find_table(mut data: *mut u8, mut fontstart: u32, mut tag: &str) -> u32 {
+pub unsafe fn stbtt__find_table(mut data: *const u8, mut fontstart: u32, mut tag: &str) -> u32 {
     let mut num_tables: i32 =
         ((ttUSHORT(((data).offset((fontstart) as isize)).offset((4) as isize))) as i32);
     let mut tabledir: u32 = fontstart + ((12) as u32);
@@ -606,7 +606,7 @@ pub unsafe fn stbtt__h_prefilter(
     }
 }
 
-pub unsafe fn stbtt__isfont(mut font: *mut u8) -> i32 {
+pub unsafe fn stbtt__isfont(mut font: *const u8) -> i32 {
     if (((*(font).offset((0) as isize)) as i32) == (49)
         && ((*(font).offset((1) as isize)) as i32) == (0)
         && ((*(font).offset((2) as isize)) as i32) == (0)
@@ -1136,7 +1136,7 @@ pub unsafe fn stbtt__v_prefilter(
 }
 
 pub unsafe fn stbtt_BakeFontBitmap(
-    mut data: *mut u8,
+    mut data: *const u8,
     mut offset: i32,
     mut pixel_height: f32,
     mut pixels: *mut u8,
@@ -1160,7 +1160,7 @@ pub unsafe fn stbtt_BakeFontBitmap(
 }
 
 pub unsafe fn stbtt_BakeFontBitmap_internal(
-    mut data: *mut u8,
+    mut data: *const u8,
     mut offset: i32,
     mut pixel_height: f32,
     mut pixels: *mut u8,
@@ -1277,7 +1277,7 @@ pub unsafe fn stbtt_CompareUTF8toUTF16_bigendian_internal(
 }
 
 pub unsafe fn stbtt_FindMatchingFont(
-    mut fontdata: *mut u8,
+    mut fontdata: *const u8,
     mut name: *mut i8,
     mut flags: i32,
 ) -> i32 {
@@ -1285,7 +1285,7 @@ pub unsafe fn stbtt_FindMatchingFont(
 }
 
 pub unsafe fn stbtt_FindMatchingFont_internal(
-    mut font_collection: *mut u8,
+    mut font_collection: *const u8,
     mut name_utf8: *mut i8,
     mut flags: i32,
 ) -> i32 {
@@ -1317,7 +1317,7 @@ pub unsafe fn stbtt_FlattenCurves(
     mut objspace_flatness: f32,
     mut contour_lengths: *mut *mut i32,
     mut num_contours: *mut i32,
-    mut userdata: *mut u8,
+    mut userdata: *const u8,
 ) -> *mut stbtt__point {
     let mut points: *mut stbtt__point = std::ptr::null_mut();
     let mut num_points: i32 = 0;
@@ -1421,11 +1421,11 @@ pub unsafe fn stbtt_FlattenCurves(
     return std::ptr::null_mut();
 }
 
-pub unsafe fn stbtt_FreeBitmap(mut bitmap: *mut u8, mut userdata: *mut u8) {
+pub unsafe fn stbtt_FreeBitmap(mut bitmap: *mut u8, mut userdata: *const u8) {
     c_runtime::free(bitmap);
 }
 
-pub unsafe fn stbtt_FreeSDF(mut bitmap: *mut u8, mut userdata: *mut u8) {
+pub unsafe fn stbtt_FreeSDF(mut bitmap: *mut u8, mut userdata: *const u8) {
     c_runtime::free(bitmap);
 }
 
@@ -1460,12 +1460,12 @@ pub unsafe fn stbtt_GetBakedQuad(
     *xpos += (((*b).xadvance) as f32);
 }
 
-pub unsafe fn stbtt_GetFontOffsetForIndex(mut data: *mut u8, mut index: i32) -> i32 {
+pub unsafe fn stbtt_GetFontOffsetForIndex(mut data: *const u8, mut index: i32) -> i32 {
     return ((stbtt_GetFontOffsetForIndex_internal(data, index)) as i32);
 }
 
 pub unsafe fn stbtt_GetFontOffsetForIndex_internal(
-    mut font_collection: *mut u8,
+    mut font_collection: *const u8,
     mut index: i32,
 ) -> i32 {
     if (stbtt__isfont(font_collection)) != 0 {
@@ -1491,11 +1491,11 @@ pub unsafe fn stbtt_GetFontOffsetForIndex_internal(
     return ((-1) as i32);
 }
 
-pub unsafe fn stbtt_GetNumberOfFonts(mut data: *mut u8) -> i32 {
+pub unsafe fn stbtt_GetNumberOfFonts(mut data: *const u8) -> i32 {
     return ((stbtt_GetNumberOfFonts_internal(data)) as i32);
 }
 
-pub unsafe fn stbtt_GetNumberOfFonts_internal(mut font_collection: *mut u8) -> i32 {
+pub unsafe fn stbtt_GetNumberOfFonts_internal(mut font_collection: *const u8) -> i32 {
     if (stbtt__isfont(font_collection)) != 0 {
         return ((1) as i32);
     }
@@ -1549,7 +1549,7 @@ pub unsafe fn stbtt_GetPackedQuad(
 }
 
 pub unsafe fn stbtt_GetScaledFontVMetrics(
-    mut fontdata: *mut u8,
+    mut fontdata: *const u8,
     mut index: i32,
     mut size: f32,
     mut ascent: *mut f32,
@@ -1597,26 +1597,26 @@ pub unsafe fn stbtt_setvertex(
     (*v).cy = ((cy) as i16);
 }
 
-pub unsafe fn ttLONG(mut p: *mut u8) -> i32 {
+pub unsafe fn ttLONG(mut p: *const u8) -> i32 {
     return (((*p.offset((0) as isize)) as i32) << 24)
         + (((*p.offset((1) as isize)) as i32) << 16)
         + (((*p.offset((2) as isize)) as i32) << 8)
         + ((*p.offset((3) as isize)) as i32);
 }
 
-pub unsafe fn ttSHORT(mut p: *mut u8) -> i16 {
+pub unsafe fn ttSHORT(mut p: *const u8) -> i16 {
     return ((((*p.offset((0) as isize)) as i32) * 256 + ((*p.offset((1) as isize)) as i32))
         as i16);
 }
 
-pub unsafe fn ttULONG(mut p: *mut u8) -> u32 {
+pub unsafe fn ttULONG(mut p: *const u8) -> u32 {
     return (((((*p.offset((0) as isize)) as i32) << 24)
         + (((*p.offset((1) as isize)) as i32) << 16)
         + (((*p.offset((2) as isize)) as i32) << 8)
         + ((*p.offset((3) as isize)) as i32)) as u32);
 }
 
-pub unsafe fn ttUSHORT(mut p: *mut u8) -> u16 {
+pub unsafe fn ttUSHORT(mut p: *const u8) -> u16 {
     return ((((*p.offset((0) as isize)) as i32) * 256 + ((*p.offset((1) as isize)) as i32))
         as u16);
 }
