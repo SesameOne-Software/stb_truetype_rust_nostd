@@ -4,13 +4,5 @@ stb_truetype_rust is Rust port of stb_truetype.h, which is library to save image
 # Crate
 
 # Sample Code
-```rust
-use stb_truetype_rust::ImageWriter::ImageWriter;
-
-fn main() {
-    let mut writer = ImageWriter::new("output.jpg");
-    writer.write_jpg(width, height, components, image_data, 90);
-}
-
-```
+https://github.com/StbRust/stb_truetype_rust/tree/master/samples
 
