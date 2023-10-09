@@ -142,7 +142,7 @@ pub fn fabs(x: f32) -> f32 {
 }
 
 pub fn fmod(x: f32, y: f32) -> f32 {
-    return x % y;
+    return libm::fmodf(x, y);
 }
 
 pub unsafe fn strlen(str: *mut u8) -> i32 {
