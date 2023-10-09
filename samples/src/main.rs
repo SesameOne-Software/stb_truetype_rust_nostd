@@ -8,12 +8,12 @@ fn main() {
     let my_str = "Hello, World!";
     let font_size = 32.0f32;
     let buffer_size = 256;
-    let mut bytes = include_bytes!("resources/DroidSans.ttf");
+    let bytes = include_bytes!("resources/DroidSans.ttf");
 
     let mut info = stbtt_fontinfo::default();
     unsafe {
         let res = stbtt_InitFont(&mut info, bytes.as_ptr(), 0);
-        if (res == 0) {
+        if res == 0 {
             panic!("stbtt_InitFont failed!");
         }
 
@@ -34,9 +34,9 @@ fn main() {
 
         let (mut posX, mut posY) = (0, 0);
 
-        for (i, c) in my_str.chars().enumerate() {
+        for (_i, c) in my_str.chars().enumerate() {
             let glyphId = stbtt_FindGlyphIndex(&mut info, c as i32);
-            if (glyphId == 0) {
+            if glyphId == 0 {
                 continue;
             }
 
@@ -52,7 +52,7 @@ fn main() {
             posX += x0;
             posY = ascent + y0;
 
-            if (posY < 0) {
+            if posY < 0 {
                 posY = 0;
             }
 

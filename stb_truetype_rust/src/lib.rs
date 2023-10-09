@@ -1,3 +1,8 @@
+#![no_std]
+#![no_main]
+
+extern crate alloc;
+
 pub use self::stb_truetype_bitmap::*;
 pub use self::stb_truetype_buf::*;
 pub use self::stb_truetype_charString::*;
