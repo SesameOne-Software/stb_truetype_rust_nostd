@@ -3,6 +3,7 @@
 use crate::*;
 use c_runtime;
 use core;
+use obfstr::obfstr;
 
 pub const STBTT_MAC_EID_ARABIC: i32 = 4;
 pub const STBTT_MAC_EID_CHINESE_TRAD: i32 = 2;
@@ -460,16 +461,16 @@ pub unsafe fn stbtt__find_table(data: *const u8, fontstart: u32, tag: &str) -> u
     while i < num_tables {
         let loc: u32 = tabledir + ((16 * i) as u32);
         if ((*(((data).offset((loc) as isize)).offset((0) as isize)).offset((0) as isize)) as i32)
-            == (tag.chars().nth(0).unwrap() as i32)
+            == (tag.as_bytes()[0] as i32)
             && ((*(((data).offset((loc) as isize)).offset((0) as isize)).offset((1) as isize))
                 as i32)
-                == (tag.chars().nth(1).unwrap() as i32)
+                == (tag.as_bytes()[1] as i32)
             && ((*(((data).offset((loc) as isize)).offset((0) as isize)).offset((2) as isize))
                 as i32)
-                == (tag.chars().nth(2).unwrap() as i32)
+                == (tag.as_bytes()[2] as i32)
             && ((*(((data).offset((loc) as isize)).offset((0) as isize)).offset((3) as isize))
                 as i32)
-                == (tag.chars().nth(3).unwrap() as i32)
+                == (tag.as_bytes()[3] as i32)
         {
             return (ttULONG(((data).offset((loc) as isize)).offset((8) as isize))) as u32;
         }
@@ -654,14 +655,14 @@ pub unsafe fn stbtt__matches(fc: *mut u8, offset: u32, name: *mut u8, flags: i32
         return (0) as i32;
     }
     if (flags) != 0 {
-        hd = (stbtt__find_table(fc, offset, "head")) as u32;
+        hd = (stbtt__find_table(fc, offset, obfstr!("head"))) as u32;
         if (((ttUSHORT(((fc).offset((hd) as isize)).offset((44) as isize))) as i32) & 7)
             != (flags & 7)
         {
             return (0) as i32;
         }
     }
-    nm = (stbtt__find_table(fc, offset, "name")) as u32;
+    nm = (stbtt__find_table(fc, offset, obfstr!("name"))) as u32;
     if nm == 0 {
         return (0) as i32;
     }

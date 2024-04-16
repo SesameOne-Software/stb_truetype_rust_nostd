@@ -1,6 +1,6 @@
 [package]
 name = "stb_truetype_rust"
-version = "1.26.1"
+version = "1.26.2"
 authors = ["StbRust Team"]
 description = "Rust port of the stb_truetype"
 repository = "https://github.com/StbRust/stb_truetype_rust"
@@ -11,5 +11,5 @@ license = "Unlicense"
 build-std = ["core", "alloc"]
 
 [dependencies]
+obfstr = { version = "*", git = "https://github.com/SesameOne-Software/obfstr.git" }
 libm = "0.2.7"
-obfstr = "0.4.3"
