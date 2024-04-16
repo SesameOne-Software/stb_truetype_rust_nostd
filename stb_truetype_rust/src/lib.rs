@@ -2,6 +2,7 @@
 #![no_main]
 
 extern crate alloc;
+extern crate obfstr;
 
 pub use self::stb_truetype_bitmap::*;
 pub use self::stb_truetype_buf::*;
