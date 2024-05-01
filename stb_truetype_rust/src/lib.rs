@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(warnings)]
 
 extern crate alloc;
 extern crate obfstr;
